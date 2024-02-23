@@ -21,6 +21,7 @@
   "devDependencies": {
     "@babel/core": "^7.19.1",
     "@parcel/babel-preset-env": "^2.7.0",
+    "@types/jest": "^29.5.12",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "@typescript-eslint/parser": "^7.0.2",
     "babel-eslint": "^10.1.0",
