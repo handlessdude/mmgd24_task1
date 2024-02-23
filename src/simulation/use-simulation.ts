@@ -2,9 +2,9 @@ import { useCanvasRenderer } from 'src/simulation/use-canvas-renderer';
 import { useSimulationState } from 'src/simulation/use-game-state';
 
 const useSimulation = () => {
-  const { setupRenderer, draw } = useCanvasRenderer();
+  const { setupRenderer, draw, getField } = useCanvasRenderer();
   const { simulationState, setupSimulationState, runQueueUpdates } =
-    useSimulationState();
+    useSimulationState(getField);
 
   const runSimulation = (tFrame: number = 0) => {
     simulationState.stopCycle = window.requestAnimationFrame(runSimulation);
