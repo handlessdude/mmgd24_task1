@@ -2,18 +2,16 @@ import Rectangle from 'src/entities/rectangle';
 import { Circle } from 'src/entities/circle';
 import { TriangleEquilateral } from 'src/entities/triangle-equilateral';
 import { Hexagon } from 'src/entities/hexagon';
+import { getFromInterval } from 'src/utils/index';
 
-const minSide = 20;
+const minSide = 30;
 const maxSide = 50;
 const minR = minSide / 2;
 const maxR = maxSide / 2;
 
-const getFromInterval = (min: number, max: number) =>
-  Math.random() * (max - min) + min;
-
 const genRandomVelocity = () => ({
-  x: getFromInterval(-3, 3),
-  y: getFromInterval(-3, 3),
+  x: getFromInterval(-2, 2),
+  y: getFromInterval(-2, 2),
 });
 
 const makeRectangle = (field: () => { width: number; height: number }) => {
