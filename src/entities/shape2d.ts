@@ -1,12 +1,10 @@
-import { Color } from 'src/models/color';
-import { Vector2d } from 'src/models/linal';
+import { BoundingBox, Vector2d } from 'src/models/linal';
 
-class Shape2d {
+abstract class Shape2d {
   public x: number;
   public y: number;
-  public color: Color; // TODO move to decorator
   public velocity: Vector2d;
-  public health: number;
+  public health: number; // TODO move to decorator
 
   constructor(x: number, y: number, velocity: Vector2d) {
     this.x = x;
@@ -14,6 +12,8 @@ class Shape2d {
     this.velocity = velocity;
     this.health = 3;
   }
+
+  abstract intersects(shape: BoundingBox): boolean;
 }
 
 export { Shape2d };

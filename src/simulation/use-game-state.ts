@@ -46,13 +46,33 @@ const useSimulationState = (field: () => { width: number; height: number }) => {
   };
 
   const update = (/*tick: number*/) => {
+    const shapesToDelete = new Set<Shape2d & BoundingBox>();
     simulationState.shapes.forEach((shape) => {
+      simulationState.shapes.forEach((otherShape) => {
+        if (shapesToDelete.has(otherShape)) return;
+        if (shape === otherShape) return;
+        if (!shape.intersects(otherShape)) return;
+        shape.velocity = negate(shape.velocity);
+        otherShape.velocity = negate(otherShape.velocity);
+        if (shape.health >= 1) {
+          shape.health -= 1;
+          if (shape.health < 1) shapesToDelete.add(shape);
+        }
+        if (otherShape.health >= 1) {
+          otherShape.health -= 1;
+          if (otherShape.health < 1) shapesToDelete.add(otherShape);
+        }
+      });
+      if (shapesToDelete.has(shape)) return;
       if (hasReachedBorders(shape)) {
         shape.velocity = negate(shape.velocity);
       }
       shape.x += shape.velocity.x;
       shape.y += shape.velocity.y;
     });
+    simulationState.shapes = simulationState.shapes.filter(
+      (shape) => !shapesToDelete.has(shape),
+    );
   };
 
   const runQueueUpdates = (numTicks: number) => {
