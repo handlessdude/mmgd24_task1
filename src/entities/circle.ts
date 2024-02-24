@@ -1,18 +1,12 @@
 import { Shape2d } from 'src/entities/shape2d';
-import { Color } from 'src/models/color';
-import { Vector2d } from 'src/models/linal';
+import { BoundingBox, Vector2d } from 'src/models/linal';
+import { AABBOverlap } from 'src/utils';
 
 class Circle extends Shape2d {
   public readonly radius: number;
 
-  constructor(
-    x: number,
-    y: number,
-    radius: number,
-    velocity: Vector2d,
-    color: Color = '#000000',
-  ) {
-    super(x, y, velocity, color);
+  constructor(x: number, y: number, radius: number, velocity: Vector2d) {
+    super(x, y, velocity);
     this.radius = radius;
   }
 
@@ -45,7 +39,17 @@ class Circle extends Shape2d {
     );
   }
 
-  intersects(/*shape: Shape2d*/) {
+  get boundingBox() {
+    return {
+      top: this.top,
+      bottom: this.bottom,
+      left: this.left,
+      right: this.right,
+    };
+  }
+
+  intersects(shape: BoundingBox) {
+    return AABBOverlap(this.boundingBox, shape);
     // if (shape instanceof Rectangle)
     //   return (
     //     this.x < shape.x + shape.w &&
@@ -53,7 +57,7 @@ class Circle extends Shape2d {
     //     this.y < shape.y + shape.h &&
     //     shape.y < this.y + this.w
     //   );
-    return false;
+    // return false;
   }
 }
 

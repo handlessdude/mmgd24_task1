@@ -1,4 +1,6 @@
 import { RegularPolygon } from 'src/entities/regular-polygon';
+import { BoundingBox } from 'src/models/linal';
+import { AABBOverlap } from 'src/utils';
 
 class Hexagon extends RegularPolygon {
   get height() {
@@ -25,7 +27,17 @@ class Hexagon extends RegularPolygon {
     return false;
   }
 
-  intersects(/*shape: Shape2d*/) {
+  get boundingBox() {
+    return {
+      top: this.top,
+      bottom: this.bottom,
+      left: this.left,
+      right: this.right,
+    };
+  }
+
+  intersects(shape: BoundingBox) {
+    return AABBOverlap(this.boundingBox, shape);
     // if (shape instanceof Rectangle)
     //   return (
     //     this.x < shape.x + shape.w &&
@@ -33,7 +45,7 @@ class Hexagon extends RegularPolygon {
     //     this.y < shape.y + shape.h &&
     //     shape.y < this.y + this.w
     //   );
-    return false;
+    // return false;
   }
 }
 

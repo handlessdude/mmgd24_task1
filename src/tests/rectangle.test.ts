@@ -52,9 +52,9 @@ describe('Rectangle.contains()', () => {
     //    │
   });
 
-  it('should return false if point located on rects right or bottom border', () => {
-    expect(rect.contains({ x: 3, y: 1 })).toBeFalsy();
-    expect(rect.contains({ x: 2, y: 2 })).toBeFalsy();
+  it('should return true if point located on rects right or bottom border', () => {
+    expect(rect.contains({ x: 3, y: 1 })).toBeTruthy();
+    expect(rect.contains({ x: 2, y: 2 })).toBeTruthy();
 
     //    0    1    2    3
     // 0  ┼──────────────○──

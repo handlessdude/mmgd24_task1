@@ -6,17 +6,13 @@ class Shape2d {
   public y: number;
   public color: Color; // TODO move to decorator
   public velocity: Vector2d;
+  public health: number;
 
-  constructor(
-    x: number,
-    y: number,
-    velocity: Vector2d,
-    color: Color = '#000000',
-  ) {
+  constructor(x: number, y: number, velocity: Vector2d) {
     this.x = x;
     this.y = y;
     this.velocity = velocity;
-    this.color = color;
+    this.health = 3;
   }
 }
 
