@@ -20,6 +20,7 @@
   "homepage": "https://github.com/Wolwer1nE/ping-pong-test#readme",
   "devDependencies": {
     "@babel/core": "^7.19.1",
+    "@babel/preset-typescript": "^7.23.3",
     "@parcel/babel-preset-env": "^2.7.0",
     "@types/jest": "^29.5.12",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
@@ -34,5 +35,8 @@
     "parcel": "^2.7.0",
     "prettier": "3.2.5",
     "typescript": "^5.3.3"
+  },
+  "jest": {
+    "moduleDirectories": ["node_modules", "<rootDir>"]
   }
 }
