@@ -1,61 +1,27 @@
-import Rectangle from 'src/entities/rectangle';
 import { Shape2d } from 'src/entities/shape2d';
-import { Circle } from 'src/entities/circle';
-import { TriangleEquilateral } from 'src/entities/triangle-equilateral';
-import { Hexagon } from 'src/entities/hexagon';
+import { BoundingBox } from 'src/models/linal';
+import {
+  makeCircle,
+  makeHexagon,
+  makeRectangle,
+  makeTriangle,
+} from 'src/utils/shape-factories';
+import { genNSamples, negate } from 'src/utils';
 
-const minSide = 20;
 const nSamples = 10;
 
-const genRandomVelocity = () => ({
-  x: 3 * (Math.random() * 2 - 1),
-  y: 3 * (Math.random() * 2 - 1),
-});
-
+// help me p[l;ease
 const useSimulationState = (field: () => { width: number; height: number }) => {
-  const buildRandomShapes = (): Array<Shape2d> => {
-    const { width, height } = field();
-    const rectangles = Array.from(
-      { length: nSamples },
-      () =>
-        new Rectangle(
-          Math.random() * width,
-          Math.random() * height,
-          Math.random() * 50 + minSide,
-          Math.random() * 50 + minSide,
-          genRandomVelocity(),
-        ),
-    );
-    const circles = Array.from(
-      { length: nSamples },
-      () =>
-        new Circle(
-          Math.random() * width,
-          Math.random() * height,
-          Math.random() * 20 + minSide,
-          genRandomVelocity(),
-        ),
-    );
-    const polygons = [TriangleEquilateral, Hexagon]
-      .map((ShapeType) =>
-        Array.from(
-          { length: nSamples },
-          () =>
-            new ShapeType(
-              Math.random() * width,
-              Math.random() * height,
-              Math.random() * 20 + minSide,
-              genRandomVelocity(),
-            ),
-        ),
-      )
-      .flat();
-
-    return [rectangles, circles, polygons].flat();
+  const buildRandomShapes = (): Array<Shape2d & BoundingBox> => {
+    const rectangles = genNSamples(nSamples, () => makeRectangle(field));
+    const circles = genNSamples(nSamples, () => makeCircle(field));
+    const triangles = genNSamples(nSamples, () => makeTriangle(field));
+    const hexagons = genNSamples(nSamples, () => makeHexagon(field));
+    return [rectangles, circles, triangles, hexagons].flat();
   };
 
   const simulationState = {
-    shapes: [] as Array<Shape2d>,
+    shapes: [] as Array<Shape2d & BoundingBox>,
     lastTick: 0,
     lastRender: 0,
     tickLength: 15, //ms
@@ -69,8 +35,21 @@ const useSimulationState = (field: () => { width: number; height: number }) => {
     simulationState.shapes = buildRandomShapes();
   };
 
+  const hasReachedBorders = (shape: BoundingBox) => {
+    const { width, height } = field();
+    return (
+      shape.left <= 0 ||
+      shape.right >= width ||
+      shape.top <= 0 ||
+      shape.bottom >= height
+    );
+  };
+
   const update = (/*tick: number*/) => {
-    simulationState.shapes.forEach((shape: Shape2d) => {
+    simulationState.shapes.forEach((shape) => {
+      if (hasReachedBorders(shape)) {
+        shape.velocity = negate(shape.velocity);
+      }
       shape.x += shape.velocity.x;
       shape.y += shape.velocity.y;
     });

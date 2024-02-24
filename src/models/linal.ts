@@ -3,4 +3,10 @@ interface Vector2d {
   y: number;
 }
 
-export type { Vector2d };
+interface BoundingBox {
+  left: number;
+  right: number;
+  top: number;
+  bottom: number;
+}
+export type { Vector2d, BoundingBox };
