@@ -8,7 +8,7 @@ import {
 } from 'src/utils/shape-factories';
 import { genNSamples, negate } from 'src/utils';
 
-const nSamples = 10;
+const nSamples = 70;
 
 // help me p[l;ease
 const useSimulationState = (field: () => { width: number; height: number }) => {
@@ -45,8 +45,11 @@ const useSimulationState = (field: () => { width: number; height: number }) => {
     );
   };
 
+  const killShapes = false;
+
   const update = (/*tick: number*/) => {
     const shapesToDelete = new Set<Shape2d & BoundingBox>();
+    const beenHitBy = new Map<Shape2d & BoundingBox, Shape2d & BoundingBox>();
     simulationState.shapes.forEach((shape) => {
       simulationState.shapes.forEach((otherShape) => {
         if (shapesToDelete.has(otherShape)) return;
@@ -54,6 +57,14 @@ const useSimulationState = (field: () => { width: number; height: number }) => {
         if (!shape.intersects(otherShape)) return;
         shape.velocity = negate(shape.velocity);
         otherShape.velocity = negate(otherShape.velocity);
+        if (
+          beenHitBy.get(shape) === otherShape ||
+          beenHitBy.get(otherShape) === shape
+        )
+          return;
+        beenHitBy.set(shape, otherShape);
+        beenHitBy.set(otherShape, shape);
+        if (!killShapes) return;
         if (shape.health >= 1) {
           shape.health -= 1;
           if (shape.health < 1) shapesToDelete.add(shape);
@@ -70,6 +81,7 @@ const useSimulationState = (field: () => { width: number; height: number }) => {
       shape.x += shape.velocity.x;
       shape.y += shape.velocity.y;
     });
+    if (!killShapes) return;
     simulationState.shapes = simulationState.shapes.filter(
       (shape) => !shapesToDelete.has(shape),
     );

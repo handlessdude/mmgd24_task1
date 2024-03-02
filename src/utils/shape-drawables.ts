@@ -42,13 +42,7 @@ const drawEquilateralTriangle = (
 };
 
 const drawHexagon = (context: CanvasRenderingContext2D, shape: Hexagon) => {
-  const angleDeg = 60; // Angle between each side of the hexagon
-  Array.from({ length: 6 }, (_, i) => {
-    const angleRad = (Math.PI / 180) * (angleDeg * i);
-    const x = shape.x + shape.side * Math.cos(angleRad);
-    const y = shape.y + shape.side * Math.sin(angleRad);
-    return { x, y };
-  }).forEach((p, idx, arr) => {
+  shape.points.forEach((p, idx, arr) => {
     if (idx === 0) {
       context.beginPath();
       context.moveTo(p.x, p.y);

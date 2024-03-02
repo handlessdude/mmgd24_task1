@@ -9,4 +9,9 @@ interface BoundingBox {
   top: number;
   bottom: number;
 }
-export type { Vector2d, BoundingBox };
+
+interface Polygon {
+  points: Vector2d[];
+}
+
+export type { Vector2d, BoundingBox, Polygon };

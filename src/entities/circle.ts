@@ -1,6 +1,10 @@
 import { Shape2d } from 'src/entities/shape2d';
-import { BoundingBox, Vector2d } from 'src/models/linal';
-import { AABBOverlap } from 'src/utils';
+import { BoundingBox, Polygon, Vector2d } from 'src/models/linal';
+import {
+  AABBOverlap,
+  checkCirclesCollision,
+  doCirclePolygonCollide,
+} from 'src/utils/collisions';
 
 class Circle extends Shape2d {
   public readonly radius: number;
@@ -48,16 +52,9 @@ class Circle extends Shape2d {
     };
   }
 
-  intersects(shape: BoundingBox) {
-    return AABBOverlap(this.boundingBox, shape);
-    // if (shape instanceof Rectangle)
-    //   return (
-    //     this.x < shape.x + shape.w &&
-    //     shape.x < this.x + this.w &&
-    //     this.y < shape.y + shape.h &&
-    //     shape.y < this.y + this.w
-    //   );
-    // return false;
+  intersects(shape: BoundingBox & Polygon) {
+    if (shape instanceof Circle) return checkCirclesCollision(this, shape);
+    return doCirclePolygonCollide(this, shape);
   }
 }
 

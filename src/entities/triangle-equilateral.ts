@@ -1,6 +1,11 @@
 import { RegularPolygon } from 'src/entities/regular-polygon';
-import { BoundingBox } from 'src/models/linal';
-import { AABBOverlap } from 'src/utils';
+import { BoundingBox, Polygon } from 'src/models/linal';
+import { Circle } from 'src/entities/circle';
+import {
+  AABBOverlap,
+  doCirclePolygonCollide,
+  doPolygonsCollide,
+} from 'src/utils/collisions';
 
 class TriangleEquilateral extends RegularPolygon {
   get height() {
@@ -23,6 +28,14 @@ class TriangleEquilateral extends RegularPolygon {
     return this.y + this.height / 3;
   }
 
+  get points() {
+    return [
+      { x: this.left, y: this.bottom },
+      { x: (this.left + this.right) / 2, y: this.top },
+      { x: this.right, y: this.bottom },
+    ];
+  }
+
   contains(/*p: Vector2d*/) {
     return false;
   }
@@ -36,16 +49,11 @@ class TriangleEquilateral extends RegularPolygon {
     };
   }
 
-  intersects(shape: BoundingBox) {
-    return AABBOverlap(this.boundingBox, shape);
-    // if (shape instanceof Rectangle)
-    //   return (
-    //     this.x < shape.x + shape.w &&
-    //     shape.x < this.x + this.w &&
-    //     this.y < shape.y + shape.h &&
-    //     shape.y < this.y + this.w
-    //   );
-    // return false;
+  intersects(shape: BoundingBox & Polygon) {
+    const mightBeColliding = AABBOverlap(this.boundingBox, shape);
+    if (!mightBeColliding) return false;
+    if (shape instanceof Circle) return doCirclePolygonCollide(shape, this);
+    return doPolygonsCollide(this, shape);
   }
 }
 

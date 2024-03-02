@@ -1,6 +1,11 @@
 import { Shape2d } from 'src/entities/shape2d';
-import { BoundingBox, Vector2d } from 'src/models/linal';
-import { AABBOverlap } from 'src/utils';
+import { BoundingBox, Polygon, Vector2d } from 'src/models/linal';
+import {
+  AABBOverlap,
+  doCirclePolygonCollide,
+  doPolygonsCollide,
+} from 'src/utils/collisions';
+import { Circle } from 'src/entities/circle';
 
 export default class Rectangle extends Shape2d {
   public readonly w: number;
@@ -34,6 +39,15 @@ export default class Rectangle extends Shape2d {
     return this.y + this.h;
   }
 
+  get points() {
+    return [
+      { x: this.left, y: this.bottom },
+      { x: this.left, y: this.top },
+      { x: this.right, y: this.top },
+      { x: this.right, y: this.bottom },
+    ];
+  }
+
   get boundingBox() {
     return {
       top: this.top,
@@ -52,15 +66,8 @@ export default class Rectangle extends Shape2d {
     );
   }
 
-  intersects(shape: BoundingBox) {
-    return AABBOverlap(this.boundingBox, shape);
-    // if (shape instanceof Rectangle)
-    //   return (
-    //     this.x < shape.x + shape.w &&
-    //     shape.x < this.x + this.w &&
-    //     this.y < shape.y + shape.h &&
-    //     shape.y < this.y + this.w
-    //   );
-    // return false;
+  intersects(shape: BoundingBox & Polygon) {
+    if (shape instanceof Circle) return doCirclePolygonCollide(shape, this);
+    return doPolygonsCollide(this, shape);
   }
 }

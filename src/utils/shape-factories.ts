@@ -4,8 +4,8 @@ import { TriangleEquilateral } from 'src/entities/triangle-equilateral';
 import { Hexagon } from 'src/entities/hexagon';
 import { getFromInterval } from 'src/utils/index';
 
-const minSide = 30;
-const maxSide = 50;
+const minSide = 10;
+const maxSide = 20;
 const minR = minSide / 2;
 const maxR = maxSide / 2;
 
