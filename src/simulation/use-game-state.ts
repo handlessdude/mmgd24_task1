@@ -7,6 +7,7 @@ import {
   makeTriangle,
 } from 'src/utils/shape-factories';
 import { genNSamples, negate } from 'src/utils';
+import { mult } from 'src/utils/linal';
 
 const nSamples = 70;
 
@@ -55,8 +56,8 @@ const useSimulationState = (field: () => { width: number; height: number }) => {
         if (shapesToDelete.has(otherShape)) return;
         if (shape === otherShape) return;
         if (!shape.intersects(otherShape)) return;
-        shape.velocity = negate(shape.velocity);
-        otherShape.velocity = negate(otherShape.velocity);
+        shape.velocity = mult(negate(shape.velocity), 2);
+        otherShape.velocity = mult(negate(otherShape.velocity), 2);
         if (
           beenHitBy.get(shape) === otherShape ||
           beenHitBy.get(otherShape) === shape

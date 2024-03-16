@@ -2,7 +2,6 @@ import { Circle } from 'src/entities/circle';
 import { BoundingBox, Polygon, Vector2d } from 'src/models/linal';
 import {
   add,
-  arMean,
   dot,
   getNormalToVec,
   mult,
@@ -30,18 +29,13 @@ const checkCirclesCollision = (first: Circle, second: Circle) => {
 };
 
 const getAxes = (poly: Polygon) => {
-  const axes: Vector2d[] = [];
   const points = poly.points;
-  for (let i = 0; i < points.length; i++) {
-    const p1 = points[i];
-    const p2 = points[(i + 1) % points.length];
-    if (!p1 || !p2)
-      throw new Error(`Error calculating normals to poly: ${points}`);
+  return points.map((p1, idx) => {
+    const p2 = points[(idx + 1) % points.length];
+    if (!p2) throw new Error(`Error calculating normals to poly: ${points}`);
     const edge = sub(p2, p1);
-    const perpendicular = getNormalToVec(edge);
-    axes.push(perpendicular);
-  }
-  return axes;
+    return getNormalToVec(edge);
+  });
 };
 
 const projectPoints = (
@@ -51,11 +45,11 @@ const projectPoints = (
   let min = Number.MAX_VALUE;
   let max = -Number.MAX_VALUE;
 
-  for (const vertex of points) {
-    const projected = dot(vertex, axis);
+  points.forEach((p) => {
+    const projected = dot(p, axis);
     if (projected < min) min = projected;
     if (projected > max) max = projected;
-  }
+  });
 
   return { min, max };
 };
@@ -75,9 +69,7 @@ const doPolygonsCollide = (first: Polygon, second: Polygon) => {
   for (const axis of axes) {
     const projection1 = projectPolygon(axis, first);
     const projection2 = projectPolygon(axis, second);
-    if (!overlap(projection1, projection2)) {
-      return false;
-    }
+    if (!overlap(projection1, projection2)) return false;
   }
   return true;
 };
@@ -89,15 +81,13 @@ const findClosestPointOnPolygon = (
   let result = -1;
   let minDistance = Number.MAX_VALUE;
 
-  for (let i = 0; i < points.length; i++) {
-    const v = points[i];
-    const distance = pointsDistance(v, circleCenter);
-
+  points.forEach((p, idx) => {
+    const distance = pointsDistance(p, circleCenter);
     if (distance < minDistance) {
       minDistance = distance;
-      result = i;
+      result = idx;
     }
-  }
+  });
 
   return result;
 };
@@ -116,11 +106,7 @@ const projectCircle = (
   let min = dot(p1, axis);
   let max = dot(p2, axis);
 
-  if (min > max) {
-    const t = min;
-    min = max;
-    max = t;
-  }
+  if (min > max) [min, max] = [max, min];
 
   return { min, max };
 };
