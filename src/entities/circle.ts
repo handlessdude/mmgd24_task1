@@ -1,7 +1,6 @@
 import { Shape2d } from 'src/entities/shape2d';
 import { BoundingBox, Polygon, Vector2d } from 'src/models/linal';
 import {
-  AABBOverlap,
   checkCirclesCollision,
   doCirclePolygonCollide,
 } from 'src/utils/collisions';
