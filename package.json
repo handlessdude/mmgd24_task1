@@ -37,6 +37,12 @@
     "typescript": "^5.3.3"
   },
   "jest": {
-    "moduleDirectories": ["node_modules", "<rootDir>"]
+    "moduleDirectories": [
+      "node_modules",
+      "<rootDir>"
+    ]
+  },
+  "dependencies": {
+    "gh-pages": "^6.1.1"
   }
 }
